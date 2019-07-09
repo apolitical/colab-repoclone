@@ -10,9 +10,9 @@ if "google.colab" in sys.modules:
 from colab_repoclone.git_access import RepoClone
 
 
-def load_repository(repo, branch="master", method="env"):
+def clone_repository(repo, branch="master", method="env"):
     """
-    load_repository
+    clone_repository
 
     Call this method to create an instance of a cloned GitHub 
     repository in the Google Colab environment. You can then use

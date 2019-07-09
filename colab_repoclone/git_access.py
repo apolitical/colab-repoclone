@@ -1,4 +1,5 @@
 import os
+from subprocess import call
 from getpass import getpass
 
 
@@ -13,22 +14,13 @@ class RepoClone:
         """
 
         if method == "env":
-            self.github_key = os.getenv("GITHUB_KEY")
-            self.github_user = os.getenv("USER_NAME")
-            self.github_email = os.getenv("USER_EMAIL")
-            if None in [self.github_key, self.github_user, self.github_email]:
-                raise EnvironmentError(
-                    "To use the *env* keyword you must provide a GitHub username, \
-                    email and access token in your vars.env file"
-                )
+            self.env_authentication()
         else:
-            self.get_access()
+            self.cli_authentication()
 
         repo_url = repo.split("//")[1]
         self.repo_name = repo.split("/")[-1].replace(".git", "")
-        self.access_repo = "https://{GITHUB_USER}:{GITHUB_KEY}@{REPO_URL}".format(
-            GITHUB_USER=self.github_user, GITHUB_KEY=self.github_key, REPO_URL=repo_url
-        )
+        self.access_repo = f"https://{self.github_user}:{self.github_key}@{repo_url}"
         self.branch = branch
 
         self.clone()
@@ -43,23 +35,13 @@ class RepoClone:
         """
 
         if self.branch == "master":
-            clone_cmd = "git clone {ACCESS_REPO}".format(ACCESS_REPO=self.access_repo)
+            clone_cmd = f"git clone {self.access_repo}"
         else:
-            clone_cmd = "git clone --branch {BRANCH} {ACCESS_REPO}".format(
-                BRANCH=self.branch, ACCESS_REPO=self.access_repo
-            )
+            clone_cmd = f"git clone --branch {self.branch} {self.access_repo}"
 
-        os.system(clone_cmd)
-        os.system(
-            "git config --global user.name {GITHUB_USER}".format(
-                GITHUB_USER=self.github_user
-            )
-        )
-        os.system(
-            "git config --global user.email {GITHUB_EMAIL}".format(
-                GITHUB_EMAIL=self.github_email
-            )
-        )
+        call(clone_cmd, shell=True)
+        call(f"git config --global user.name {self.github_user}", shell=True)
+        call(f"git config --global user.email {self.github_email}", shell=True)
 
     def pull(self):
         """
@@ -69,7 +51,7 @@ class RepoClone:
 
         """
 
-        os.system("git pull")
+        call("git pull", shell=True)
 
     def push(self, commit_msg="Latest Commit from Google Colab", file_path="."):
         """
@@ -85,15 +67,32 @@ class RepoClone:
 
         """
 
-        os.system("cd /content/{REPO_NAME}".format(REPO_NAME=self.repo_name))
+        call(f"cd /content/{self.repo_name}", shell=True)
 
-        os.system("git add {FILE_PATH}".format(FILE_PATH=file_path))
-        os.system("git commit -m {COMMIT_MSG}".format(COMMIT_MSG=commit_msg))
-        os.system("git push")
+        call(f"git add {file_path}", shell=True)
+        call(f"git commit -m {commit_msg}", shell=True)
+        call("git push", shell=True)
 
-    def get_access(self):
+    def env_authentication(self):
         """
-        get_access
+        env_authentication
+
+        Checks environment variables for GitHub credentials. Used only when
+        method keyword passed to class instance is "env"
+
+        """
+
+        self.github_key = os.getenv("GITHUB_KEY")
+        self.github_user = os.getenv("USER_NAME")
+        self.github_email = os.getenv("USER_EMAIL")
+        if None in [self.github_key, self.github_user, self.github_email]:
+            raise EnvironmentError(
+                "Using method='env', GITHUB_KEY, USER_NAME, USER_EMAIL must be provided in the environment"
+            )
+
+    def cli_authentication(self):
+        """
+        cli_authentication
 
         Uses getpass module to get user's GitHub credentials from standard input.
         Used only if method keyword passed to class instance is *not* "env"
