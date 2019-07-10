@@ -50,8 +50,12 @@ class RepoClone:
         Pulls latest changes to GitHub repo into local Google Colab environment
 
         """
+        os.chdir(f"/content/{self.repo_name}")
 
-        call("git pull", shell=True)
+        pull = call("git pull", shell=True)
+        
+        if pull != 0:
+            print(f"Command: < git pull > failed. Check your permissions.")
 
     def push(self, commit_msg="Latest Commit from Google Colab", file_path="."):
         """
@@ -67,11 +71,18 @@ class RepoClone:
 
         """
 
-        call(f"cd /content/{self.repo_name}", shell=True)
+        os.chdir(f"/content/{self.repo_name}")
 
-        call(f"git add {file_path}", shell=True)
-        call(f"git commit -m {commit_msg}", shell=True)
-        call("git push", shell=True)
+        add = call(f"git add {file_path}", shell=True)
+        commit = call(f"git commit -m '{commit_msg}'", shell=True)
+        push = call("git push", shell=True)
+
+        if add != 0:
+            print(f"Command: < git add {file_path} > failed. Check your permissions.")
+        if commit != 0:
+            print(f"Command: < git commit -m '{commit_msg}' > failed. Possibly because no changes were made.")
+        if push != 0:
+            print(f"Command: < git push > failed. Check your permissions.")
 
     def env_authentication(self):
         """
@@ -99,6 +110,6 @@ class RepoClone:
 
         """
 
+        self.github_user = input("Enter your GitHub Username: ")
+        self.github_email = input("Enter your GitHub Email: ")
         self.github_key = getpass("Enter your GitHub Authorization Token: ")
-        self.github_user = getpass("Enter your GitHub Username: ")
-        self.github_email = getpass("Enter your GitHub Email: ")

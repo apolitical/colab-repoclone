@@ -17,6 +17,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
  - N/A
 
+
+## [0.1.0] - 2019-07-10
+
+Fixed commit issue, added more descriptive error messages and removed masking when user 
+inputs GitHub username and email
+
+### Added
+ - Descriptive error messages
+
+### Changed
+ - 'git commit' command
+ - Masking when entering username and email
+
+
 ## [0.0.2] - 2019-07-10
 
 Minor changes and added MANIFEST to fix build issues
@@ -24,6 +38,8 @@ Minor changes and added MANIFEST to fix build issues
 ### Added
  - MANIFEST.in
 
+
 ## [0.0.1] - 2019-07-09
 
-Initial version. Handles github integration for pushing and pulling to/from repositories directly from Google Colab.
+Initial version. Handles github integration for pushing and pulling to/from repositories
+directly from Google Colab.
