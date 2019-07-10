@@ -26,7 +26,7 @@ def local_repository(repo, clone=True, branch="master", auth_method="env"):
         clone=True - indicates whether a new repository is being created
             locally and uploaded to GitHub, rather than a clone
         branch="master" - the specific branch to clone, if desired
-        method="env" - indicates where to look for your GitHub credentials.
+        auth_method="env" - indicates where to look for your GitHub credentials.
             "env" will expect them in your environment variables, anything
             else will prompt the user to input them.
 
@@ -39,4 +39,4 @@ def local_repository(repo, clone=True, branch="master", auth_method="env"):
     if not clone:
         branch = "master"
 
-    return LocalRepo(repo, clone=clone, branch=branch, auth_method=method)
+    return LocalRepo(repo, clone=clone, branch=branch, auth_method=auth_method)
