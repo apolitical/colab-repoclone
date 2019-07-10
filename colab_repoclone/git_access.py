@@ -13,7 +13,7 @@ class LocalRepo:
 
         """
 
-        if method == "env":
+        if auth_method == "env":
             self.env_authentication()
         else:
             self.cli_authentication()
@@ -153,7 +153,7 @@ class LocalRepo:
         env_authentication
 
         Checks environment variables for GitHub credentials. Used only when
-        method keyword passed to class instance is "env"
+        auth_method keyword passed to class instance is "env"
 
         """
 
@@ -162,7 +162,7 @@ class LocalRepo:
         self.github_email = os.getenv("USER_EMAIL")
         if None in [self.github_key, self.github_user, self.github_email]:
             raise EnvironmentError(
-                "Using method='env', GITHUB_KEY, USER_NAME, USER_EMAIL must be provided \
+                "Using auth_method='env', GITHUB_KEY, USER_NAME, USER_EMAIL must be provided \
                 in the environment"
             )
 
@@ -171,7 +171,7 @@ class LocalRepo:
         cli_authentication
 
         Uses getpass module to get user's GitHub credentials from standard input.
-        Used only if method keyword passed to class instance is *not* "env"
+        Used only if auth_method keyword passed to class instance is *not* "env"
 
         """
 
