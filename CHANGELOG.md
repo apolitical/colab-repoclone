@@ -17,6 +17,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
  - N/A
 
+## [0.1.2] - 2019-07-10
+
+Added capability to initialize new repositories directly from Colab. A few other minor
+changes and reformatting
+
+### Added
+ - Initialize repo with existing folder capability
+
 
 ## [0.1.1] - 2019-07-10
 

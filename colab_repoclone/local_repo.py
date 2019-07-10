@@ -3,13 +3,13 @@ from subprocess import call
 from getpass import getpass
 
 
-class RepoClone:
-    def __init__(self, repo, branch="master", method="env"):
+class LocalRepo:
+    def __init__(self, repo, clone=True, branch="master", auth_method="env"):
         """
         __init__
 
-        Gathers user's GitHub credentials and clones desired repository
-        with push/pull capabilities.
+        Gathers user's GitHub credentials and either clones or initializes
+        desired repository with push/pull capabilities.
 
         """
 
@@ -19,11 +19,18 @@ class RepoClone:
             self.cli_authentication()
 
         repo_url = repo.split("//")[1]
-        self.repo_name = repo.split("/")[-1].replace(".git", "")
+        if clone:
+            self.repo_dir = repo.split("/")[-1].replace(".git", "")
+        else:
+            self.repo_dir = input("Enter the name of your new repo: ")
+
         self.access_repo = f"https://{self.github_user}:{self.github_key}@{repo_url}"
         self.branch = branch
 
-        self.clone()
+        if clone:
+            self.clone()
+        else:
+            self.new()
 
     def clone(self):
         """
@@ -44,6 +51,54 @@ class RepoClone:
         call(f"git config --global user.name {self.github_user}", shell=True)
         call(f"git config --global user.email {self.github_email}", shell=True)
 
+    def new(self):
+        """
+        new
+
+        Initializes a new repository in Google Colab environment using username and
+        access key to provide push/pull capabilities.
+
+        """
+        os.chdir(f"/content/{self.repo_dir}")
+
+        call("git init .", shell=True)
+        origin = call(f"git remote add origin {self.access_repo}", shell=True)
+        if origin != 0:
+            print(
+                f"Command: < git remote add origin {self.access_repo} > failed. Possibly \
+                because origin already exists. Will try removing & trying."
+            )
+            call("git remote rm origin", shell=True)
+            origin = call(f"git remote add origin {self.access_repo}", shell=True)
+            if origin != 0:
+                print(
+                    f"Command: < git remote add origin {self.access_repo} > failed again. \
+                    Check your permissions and that this repository exists on yout Github."
+                )
+                return
+        call(f"git config --global user.name {self.github_user}", shell=True)
+        call(f"git config --global user.email {self.github_email}", shell=True)
+
+        ## First push must set remote as upstread
+        add = call("git add .", shell=True)
+        commit = call("git commit -m 'First commit from Google Colab'", shell=True)
+        push = call("git push --set-upstream origin master", shell=True)
+
+        if add != 0:
+            print(f"Command: < git add {file_path} > failed. Check your permissions.")
+        if commit != 0:
+            print(
+                f"Command: < git commit -m 'First commit via Google Colab' > failed. \
+                Possibly because there were no files in /{self.repo_dir}"
+            )
+        if push != 0:
+            print(
+                "Command: < git push --set-upstream origin master > failed. \
+                Check your permissions."
+            )
+
+        os.chdir("/content")
+
     def pull(self):
         """
         pull
@@ -51,7 +106,7 @@ class RepoClone:
         Pulls latest changes to GitHub repo into local Google Colab environment
 
         """
-        os.chdir(f"/content/{self.repo_name}")
+        os.chdir(f"/content/{self.repo_dir}")
 
         pull = call("git pull", shell=True)
 
@@ -74,7 +129,7 @@ class RepoClone:
 
         """
 
-        os.chdir(f"/content/{self.repo_name}")
+        os.chdir(f"/content/{self.repo_dir}")
 
         add = call(f"git add {file_path}", shell=True)
         commit = call(f"git commit -m '{commit_msg}'", shell=True)
@@ -84,8 +139,9 @@ class RepoClone:
             print(f"Command: < git add {file_path} > failed. Check your permissions.")
         if commit != 0:
             print(
-                f"Command: < git commit -m '{commit_msg}' > failed. Possibly because no changes were made. \
-                Also make sure there were no single or double quotation marks in your commit message."
+                f"Command: < git commit -m '{commit_msg}' > failed. Possibly because no \
+                changes were made. Also ensure there were no single or double quotation \
+                marks in your commit message."
             )
         if push != 0:
             print("Command: < git push > failed. Check your permissions.")
@@ -106,7 +162,8 @@ class RepoClone:
         self.github_email = os.getenv("USER_EMAIL")
         if None in [self.github_key, self.github_user, self.github_email]:
             raise EnvironmentError(
-                "Using method='env', GITHUB_KEY, USER_NAME, USER_EMAIL must be provided in the environment"
+                "Using method='env', GITHUB_KEY, USER_NAME, USER_EMAIL must be provided \
+                in the environment"
             )
 
     def cli_authentication(self):
