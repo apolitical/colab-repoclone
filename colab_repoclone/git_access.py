@@ -33,6 +33,7 @@ class RepoClone:
         access key to provide push/pull capabilities.
 
         """
+        os.chdir("/content")
 
         if self.branch == "master":
             clone_cmd = f"git clone {self.access_repo}"
@@ -53,9 +54,11 @@ class RepoClone:
         os.chdir(f"/content/{self.repo_name}")
 
         pull = call("git pull", shell=True)
-        
+
         if pull != 0:
-            print(f"Command: < git pull > failed. Check your permissions.")
+            print("Command: < git pull > failed. Check your permissions.")
+
+        os.chdir("/content")
 
     def push(self, commit_msg="Latest Commit from Google Colab", file_path="."):
         """
@@ -80,9 +83,14 @@ class RepoClone:
         if add != 0:
             print(f"Command: < git add {file_path} > failed. Check your permissions.")
         if commit != 0:
-            print(f"Command: < git commit -m '{commit_msg}' > failed. Possibly because no changes were made.")
+            print(
+                f"Command: < git commit -m '{commit_msg}' > failed. Possibly because no changes were made. \
+                Also make sure there were no single or double quotation marks in your commit message."
+            )
         if push != 0:
-            print(f"Command: < git push > failed. Check your permissions.")
+            print("Command: < git push > failed. Check your permissions.")
+
+        os.chdir("/content")
 
     def env_authentication(self):
         """
