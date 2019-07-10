@@ -1,7 +1,7 @@
 # __init__.py for colab_repoclone
 
 name = "colab_repoclone"
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 import sys
 

@@ -18,6 +18,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - N/A
 
 
+## [0.1.1] - 2019-07-10
+
+Added additional "change directory" commands to ensure files end up in the right place.
+A few other minor changes
+
+### Added
+ - Multiple os.chdir commands
+
+
 ## [0.1.0] - 2019-07-10
 
 Fixed commit issue, added more descriptive error messages and removed masking when user 
