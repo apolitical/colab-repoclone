@@ -1,7 +1,7 @@
  Changelog
  =========
 
-All noteable changes to this project, *colab-git*, will be documented in this file.
+All noteable changes to this project, *colab-repoclone*, will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -19,4 +19,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.0.1] - 2019-07-09
 
-Initial version. Handles github integration in Google Colab.
+Initial version. Handles github integration for pushing and pulling to/from repositories directly from Google Colab.

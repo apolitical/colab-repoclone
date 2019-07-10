@@ -1,7 +1,7 @@
 from os import path
 
-MODULE_NAME = "colab_git"
-PACKAGE_NAME = "colab_git"
+MODULE_NAME = "colab_repoclone"
+PACKAGE_NAME = "colab_repoclone"
 SHORT_DESCRIPTION = "Code for integrating git push/pull capabilities into Google Colab"
 
 try:
@@ -111,5 +111,5 @@ setup(
     long_description=get_long_description_from_README(),
     long_description_content_type="text/markdown",
     author="JordanLueck",
-    author_email="lueck.jordan@gmail.com",
+    author_email="jordan.lueck@apolitical.co",
 )
