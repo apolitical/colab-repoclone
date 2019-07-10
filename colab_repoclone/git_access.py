@@ -64,16 +64,11 @@ class LocalRepo:
         call("git init .", shell=True)
         origin = call(f"git remote add origin {self.access_repo}", shell=True)
         if origin != 0:
-            print(
-                f"Command: < git remote add origin {self.access_repo} > failed. Possibly \
-                because origin already exists. Will try removing & trying."
-            )
             call("git remote rm origin", shell=True)
             origin = call(f"git remote add origin {self.access_repo}", shell=True)
             if origin != 0:
                 print(
-                    f"Command: < git remote add origin {self.access_repo} > failed again. \
-                    Check your permissions and that this repository exists on yout Github."
+                    f"Command: < git remote add origin {self.access_repo} > failed. Check your permissions and that this repository exists on GitHub."
                 )
                 return
         call(f"git config --global user.name {self.github_user}", shell=True)
@@ -85,16 +80,14 @@ class LocalRepo:
         push = call("git push --set-upstream origin master", shell=True)
 
         if add != 0:
-            print(f"Command: < git add {file_path} > failed. Check your permissions.")
+            print("Command: < git add . > failed. Check your permissions.")
         if commit != 0:
             print(
-                f"Command: < git commit -m 'First commit via Google Colab' > failed. \
-                Possibly because there were no files in /{self.repo_dir}"
+                f"Command: < git commit -m 'First commit via Google Colab' > failed. Possibly because there were no files in /{self.repo_dir}"
             )
         if push != 0:
             print(
-                "Command: < git push --set-upstream origin master > failed. \
-                Check your permissions."
+                "Command: < git push --set-upstream origin master > failed. Check your permissions."
             )
 
         os.chdir("/content")
@@ -139,9 +132,7 @@ class LocalRepo:
             print(f"Command: < git add {file_path} > failed. Check your permissions.")
         if commit != 0:
             print(
-                f"Command: < git commit -m '{commit_msg}' > failed. Possibly because no \
-                changes were made. Also ensure there were no single or double quotation \
-                marks in your commit message."
+                f"Command: < git commit -m '{commit_msg}' > failed. Possibly because no changes were made. Also ensure there were no single or double quotation marks in your commit message."
             )
         if push != 0:
             print("Command: < git push > failed. Check your permissions.")
