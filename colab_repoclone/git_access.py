@@ -61,7 +61,7 @@ class LocalRepo:
         """
         os.chdir(f"/content/{self.repo_dir}")
 
-        call("git init .", shell=True)
+        call("git init", shell=True)
         origin = call(f"git remote add origin {self.access_repo}", shell=True)
         if origin != 0:
             call("git remote rm origin", shell=True)
@@ -74,16 +74,17 @@ class LocalRepo:
         call(f"git config --global user.name {self.github_user}", shell=True)
         call(f"git config --global user.email {self.github_email}", shell=True)
 
-        ## First push must set remote as upstread
+        ## First must pull (in case repo already exists), then push and set remote as upstream
+        pull = call("git pull origin master --allow-unrelated-histories", shell=True)
         add = call("git add .", shell=True)
-        commit = call("git commit -m 'First commit from Google Colab'", shell=True)
+        commit = call("git commit -m 'First Commit from Google Colab'", shell=True)
         push = call("git push --set-upstream origin master", shell=True)
 
         if add != 0:
             print("Command: < git add . > failed. Check your permissions.")
         if commit != 0:
             print(
-                f"Command: < git commit -m 'First commit via Google Colab' > failed. Possibly because there were no files in /{self.repo_dir}"
+                f"Command: < git commit -m 'First Commit from Google Colab' > failed. Possibly because there were no files in /{self.repo_dir}"
             )
         if push != 0:
             print(
