@@ -25,6 +25,9 @@ changes and reformatting
 ### Added
  - Initialize repo with existing folder capability
 
+### Changes
+ - "method" keyword to "auth_method" for clarity
+
 
 ## [0.1.1] - 2019-07-10
 
