@@ -18,6 +18,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - N/A
 
 
+## [0.1.5] - 2019-07-10
+
+Fixed bug with initializing new repository functionality
+
+
 ## [0.1.4] - 2019-07-10
 
 Very minor formatting changes
