@@ -7,7 +7,7 @@ import sys
 
 if "google.colab" in sys.modules:
     import colab_env
-from colab_repoclone.local_repo import LocalRepo
+from colab_repoclone.git_access import LocalRepo
 
 
 def local_repository(repo, clone=True, branch="master", auth_method="env"):
