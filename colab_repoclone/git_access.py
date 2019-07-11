@@ -175,9 +175,9 @@ class LocalRepo:
 
         os.chdir("/content")
 
-    def branch(self, branch_name=None):
+    def new_branch(self, branch_name=None):
         """
-        branch
+        new_branch
 
         Creates a new branch off the current one and checks it out so future
         changes will be pushed to this new branch
