@@ -2,7 +2,9 @@ from os import path
 
 MODULE_NAME = "colab_repoclone"
 PACKAGE_NAME = "colab_repoclone"
-SHORT_DESCRIPTION = "Code for integrating git push/pull capabilities into Google Colab"
+SHORT_DESCRIPTION = (
+    "Code for integrating git push/pull and other capabilities into Google Colab"
+)
 
 try:
     from setuptools import setup

@@ -1,7 +1,7 @@
 # __init__.py for colab_repoclone
 
 name = "colab_repoclone"
-__version__ = "0.1.5"
+__version__ = "0.2.0"
 
 import sys
 
@@ -16,7 +16,7 @@ def local_repository(repo, clone=True, branch="master", auth_method="env"):
 
     Call this method to create an instance of a GitHub repository in the 
     Google Colab environment. You can then use the class methods to push
-    and pull from this repo directly from Colab.
+    and pull from this repo, among other things, directly from Colab.
 
     INPUTS:
         repo - the link to the GitHub repository for cloning or the empty
@@ -31,7 +31,7 @@ def local_repository(repo, clone=True, branch="master", auth_method="env"):
             else will prompt the user to input them.
 
     RETURNS:
-        A RepoClone instance
+        A LocalRepo instance
 
     """
 

@@ -9,7 +9,7 @@ class LocalRepo:
         __init__
 
         Gathers user's GitHub credentials and either clones or initializes
-        desired repository with push/pull capabilities.
+        desired repository.
 
         """
 
@@ -22,10 +22,10 @@ class LocalRepo:
         if clone:
             self.repo_dir = repo.split("/")[-1].replace(".git", "")
         else:
-            self.repo_dir = input("Enter the name of your new repo: ")
+            self.repo_dir = input("Local Repository :: ")
 
         self.access_repo = f"https://{self.github_user}:{self.github_key}@{repo_url}"
-        self.branch = branch
+        self.branch = branch7
 
         if clone:
             self.clone()
@@ -37,7 +37,7 @@ class LocalRepo:
         clone
 
         Clones repository into Google Colab environment using username and
-        access key to provide push/pull capabilities.
+        access key.
 
         """
         os.chdir("/content")
@@ -56,17 +56,23 @@ class LocalRepo:
         new
 
         Initializes a new repository in Google Colab environment using username and
-        access key to provide push/pull capabilities.
+        access key.
 
         """
-        os.chdir(f"/content/{self.repo_dir}")
+        try:
+            os.chdir(f"/content/{self.repo_dir}")
+        except OSError:
+            print(
+                f"No directory named {self.repo_dir} exists. Are you sure you made it?"
+            )
+            return
 
         call("git init", shell=True)
         origin = call(f"git remote add origin {self.access_repo}", shell=True)
-        if origin != 0:
+        if not origin:
             call("git remote rm origin", shell=True)
             origin = call(f"git remote add origin {self.access_repo}", shell=True)
-            if origin != 0:
+            if not origin:
                 print(
                     f"Command: < git remote add origin {self.access_repo} > failed. Check your permissions and that this repository exists on GitHub."
                 )
@@ -76,17 +82,29 @@ class LocalRepo:
 
         ## First must pull (in case repo already exists), then push and set remote as upstream
         pull = call("git pull origin master --allow-unrelated-histories", shell=True)
-        add = call("git add .", shell=True)
-        commit = call("git commit -m 'First Commit from Google Colab'", shell=True)
-        push = call("git push --set-upstream origin master", shell=True)
+        if not pull:
+            print(
+                "Command: < git pull origin master --allow-unrelated-histories > failed. Check your permissions."
+            )
+            os.chdir("/content")
+            return
 
-        if add != 0:
+        add = call("git add .", shell=True)
+        if not add:
             print("Command: < git add . > failed. Check your permissions.")
-        if commit != 0:
+            os.chdir("/content")
+            return
+
+        commit = call("git commit -m 'First Commit from Google Colab'", shell=True)
+        if not commit:
             print(
                 f"Command: < git commit -m 'First Commit from Google Colab' > failed. Possibly because there were no files in /{self.repo_dir}"
             )
-        if push != 0:
+            os.chdir("/content")
+            return
+
+        push = call("git push --set-upstream origin master", shell=True)
+        if not push:
             print(
                 "Command: < git push --set-upstream origin master > failed. Check your permissions."
             )
@@ -97,46 +115,185 @@ class LocalRepo:
         """
         pull
 
-        Pulls latest changes to GitHub repo into local Google Colab environment
+        Pulls latest changes from GitHub repo into local Google Colab environment
 
         """
         os.chdir(f"/content/{self.repo_dir}")
 
         pull = call("git pull", shell=True)
-
-        if pull != 0:
+        if not pull:
             print("Command: < git pull > failed. Check your permissions.")
 
         os.chdir("/content")
 
-    def push(self, commit_msg="Latest Commit from Google Colab", file_path="."):
+    def push(self, commit_msg=None, file_path="."):
         """
         push
 
-        Changes directory into this repo, then commits and pushes latest changes
-        to GitHub from Google Colab.
+        Commits and pushes latest changes to GitHub from Google Colab.
 
         KEYWORDS:
-            commit_msg - message for this commit to GitHub
+            commit_msg=None - message for this commit to GitHub. If none passed,
+                will prompt for user input.
             file_path - path to specific files desired to push, defaults to all 
                 files in repository.
 
         """
+        if commit_msg is None:
+            commit_msg = input("Commit Message :: ")
+
+        check = """
+        *************************************************************
+        * Are you sure you want to push your changes?               *
+        *                                                           *
+        * Press "q" to abort. Press any other key to continue...    *
+        *************************************************************
+        """
+        if input(check).lower() == "q":
+            print("\n!! PUSH ABORTED !!\n")
+            return
 
         os.chdir(f"/content/{self.repo_dir}")
 
         add = call(f"git add {file_path}", shell=True)
-        commit = call(f"git commit -m '{commit_msg}'", shell=True)
-        push = call("git push", shell=True)
-
-        if add != 0:
+        if not add:
             print(f"Command: < git add {file_path} > failed. Check your permissions.")
-        if commit != 0:
+            os.chdir("/content")
+            return
+
+        commit = call(f"git commit -m '{commit_msg}'", shell=True)
+        if not commit:
             print(
                 f"Command: < git commit -m '{commit_msg}' > failed. Possibly because no changes were made. Also ensure there were no single or double quotation marks in your commit message."
             )
-        if push != 0:
+            os.chdir("/content")
+            return
+
+        push = call("git push", shell=True)
+        if not push:
             print("Command: < git push > failed. Check your permissions.")
+
+        os.chdir("/content")
+
+    def branch(self, branch_name=None):
+        """
+        branch
+
+        Creates a new branch off the current one and checks it out so future
+        changes will be pushed to this new branch
+
+        KEYWORDS:
+            branch_name=None - the name of the new branch to create. If none
+                passed, will prompt for user input.
+
+        """
+        if branch_name is None:
+            branch_name = input("New Branch :: ")
+
+        os.chdir(f"/content/{self.repo_dir}")
+
+        brc = call(f"git branch {branch_name}", shell=True)
+        if not brc:
+            print(
+                f"Command: < git branch {branch_name} > failed. Check your permissions."
+            )
+            os.chdir("/content")
+            return
+
+        chk = call(f"git checkout {branch_name}", shell=True)
+        if not chk:
+            print(
+                f"Command: < git checkout {branch_name} > failed. Check that this branch exists."
+            )
+            os.chdir("/content")
+            return
+
+        self.branch = branch_name
+
+        # Must push new branch to GitHub before making any changes to set the
+        # upstream for future pushes from this branch
+        push = call(f"git push --set-upstream origin {branch_name}", shell=True)
+        if not push:
+            print(
+                f"Command: < git push --set-upstream origin {branch_name} > failed. Check your permissions."
+            )
+
+        os.chdir("/content")
+
+    def checkout(self, branch_name=None):
+        """
+        checkout
+
+        Checks out an existing branch of the repository. All future pushes
+        will push to this branch.
+
+        KEYWORDS:
+            branch_name=None - the name of the existing branch to checkout.
+                If none passed, will prompt for user input.
+
+        """
+
+        if branch_name is None:
+            branch_name = input("Checkout Branch :: ")
+
+        os.chdir(f"/content/{self.repo_dir}")
+
+        chk = call(f"git checkout {branch_name}", shell=True)
+        if not chk:
+            print(
+                f"Command: < git checkout {branch_name} > failed. Check that this branch exists."
+            )
+            os.chdir("/content")
+            return
+
+        self.branch = branch_name
+        os.chdir("/content")
+
+    def reset(self, commit=None):
+        """
+        reset
+
+        Performs a hard reset of the local repo to the specified commit,
+        then force pushes this to rollback the repository, deleting all
+        intermediate commits in the process.
+
+        KEYWORDS:
+            commit=None - the commit id to rollback to. If none passed,
+                defaults to the previous commit.
+
+        """
+        check = """
+        *****************************************************************
+        *                         !! CAUTION !!                         *
+        *                                                               *
+        * Are you sure you want to rollback to a previous commit?       *
+        *                                                               *
+        * This is a hard reset, meaning all commits between the current *
+        * and the one you are rolling back to will be lost.             *
+        *                                                               *
+        * Press "q" to abort. Press any other key to continue...        *
+        *****************************************************************
+        """
+        if input(check).lower() == "q":
+            print("\n!! RESET ABORTED !!\n")
+            return
+
+        os.chdir(f"/content/{self.repo_dir}")
+
+        if commit is None:
+            reset_cmd = "git reset --hard"
+        else:
+            reset_cmd = f"git reset --hard {commit}"
+
+        reset = call(reset_cmd, shell=True)
+        if not reset:
+            print(
+                f"Command: < {reset_cmd} > failed. Check the supplied commit id is a valid one."
+            )
+
+        push = call("git push --force", shell=True)
+        if not push:
+            print(f"Command: < git push --force > failed. Check your permissions.")
 
         os.chdir("/content")
 
@@ -167,6 +324,6 @@ class LocalRepo:
 
         """
 
-        self.github_user = input("Enter your GitHub Username: ")
-        self.github_email = input("Enter your GitHub Email: ")
-        self.github_key = getpass("Enter your GitHub Authorization Token: ")
+        self.github_user = input("GitHub Username :: ")
+        self.github_email = input("GitHub Email :: ")
+        self.github_key = getpass("GitHub Authorization Token :: ")
