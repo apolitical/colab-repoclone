@@ -69,10 +69,10 @@ class LocalRepo:
 
         call("git init", shell=True)
         origin = call(f"git remote add origin {self.access_repo}", shell=True)
-        if not origin:
+        if origin:
             call("git remote rm origin", shell=True)
             origin = call(f"git remote add origin {self.access_repo}", shell=True)
-            if not origin:
+            if origin:
                 print(
                     f"Command: < git remote add origin {self.access_repo} > failed. Check your permissions and that this repository exists on GitHub."
                 )
@@ -82,7 +82,7 @@ class LocalRepo:
 
         ## First must pull (in case repo already exists), then push and set remote as upstream
         pull = call("git pull origin master --allow-unrelated-histories", shell=True)
-        if not pull:
+        if pull:
             print(
                 "Command: < git pull origin master --allow-unrelated-histories > failed. Check your permissions."
             )
@@ -90,13 +90,13 @@ class LocalRepo:
             return
 
         add = call("git add .", shell=True)
-        if not add:
+        if add:
             print("Command: < git add . > failed. Check your permissions.")
             os.chdir("/content")
             return
 
         commit = call("git commit -m 'First Commit from Google Colab'", shell=True)
-        if not commit:
+        if commit:
             print(
                 f"Command: < git commit -m 'First Commit from Google Colab' > failed. Possibly because there were no files in /{self.repo_dir}"
             )
@@ -104,7 +104,7 @@ class LocalRepo:
             return
 
         push = call("git push --set-upstream origin master", shell=True)
-        if not push:
+        if push:
             print(
                 "Command: < git push --set-upstream origin master > failed. Check your permissions."
             )
@@ -121,7 +121,7 @@ class LocalRepo:
         os.chdir(f"/content/{self.repo_dir}")
 
         pull = call("git pull", shell=True)
-        if not pull:
+        if pull:
             print("Command: < git pull > failed. Check your permissions.")
 
         os.chdir("/content")
@@ -156,13 +156,13 @@ class LocalRepo:
         os.chdir(f"/content/{self.repo_dir}")
 
         add = call(f"git add {file_path}", shell=True)
-        if not add:
+        if add:
             print(f"Command: < git add {file_path} > failed. Check your permissions.")
             os.chdir("/content")
             return
 
         commit = call(f"git commit -m '{commit_msg}'", shell=True)
-        if not commit:
+        if commit:
             print(
                 f"Command: < git commit -m '{commit_msg}' > failed. Possibly because no changes were made. Also ensure there were no single or double quotation marks in your commit message."
             )
@@ -170,7 +170,7 @@ class LocalRepo:
             return
 
         push = call("git push", shell=True)
-        if not push:
+        if push:
             print("Command: < git push > failed. Check your permissions.")
 
         os.chdir("/content")
@@ -193,7 +193,7 @@ class LocalRepo:
         os.chdir(f"/content/{self.repo_dir}")
 
         brc = call(f"git branch {branch_name}", shell=True)
-        if not brc:
+        if brc:
             print(
                 f"Command: < git branch {branch_name} > failed. Check your permissions."
             )
@@ -201,7 +201,7 @@ class LocalRepo:
             return
 
         chk = call(f"git checkout {branch_name}", shell=True)
-        if not chk:
+        if chk:
             print(
                 f"Command: < git checkout {branch_name} > failed. Check that this branch exists."
             )
@@ -213,7 +213,7 @@ class LocalRepo:
         # Must push new branch to GitHub before making any changes to set the
         # upstream for future pushes from this branch
         push = call(f"git push --set-upstream origin {branch_name}", shell=True)
-        if not push:
+        if push:
             print(
                 f"Command: < git push --set-upstream origin {branch_name} > failed. Check your permissions."
             )
@@ -239,7 +239,7 @@ class LocalRepo:
         os.chdir(f"/content/{self.repo_dir}")
 
         chk = call(f"git checkout {branch_name}", shell=True)
-        if not chk:
+        if chk:
             print(
                 f"Command: < git checkout {branch_name} > failed. Check that this branch exists."
             )
@@ -286,13 +286,13 @@ class LocalRepo:
             reset_cmd = f"git reset --hard {commit}"
 
         reset = call(reset_cmd, shell=True)
-        if not reset:
+        if reset:
             print(
                 f"Command: < {reset_cmd} > failed. Check the supplied commit id is a valid one."
             )
 
         push = call("git push --force", shell=True)
-        if not push:
+        if push:
             print(f"Command: < git push --force > failed. Check your permissions.")
 
         os.chdir("/content")
