@@ -18,6 +18,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - N/A
 
 
+## [0.2.0] - 2019-07-11
+
+Added significant functionality, including methods for creating and checking-out new
+branches and for resetting to a prior commit. Also made minor changes to formatting,
+code flow and user input fields.
+
+### Added
+ - branch() method
+ - checkout() method
+ - reset() method
+ - Warnings before pushing and resetting
+
+### Changed
+ - Failure checks now occur after each shell call to stop errors from carrying over
+ - Expanded upon some error messages to make more informative
+ - Edited wording of user input fields
+ - Pushing now requires you enter a commit message (there is no default)
+ - Updated README with new functionalities
+
+
 ## [0.1.5] - 2019-07-10
 
 Fixed bug with initializing new repository functionality
