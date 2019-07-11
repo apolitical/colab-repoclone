@@ -25,7 +25,7 @@ class LocalRepo:
             self.repo_dir = input("Local Repository :: ")
 
         self.access_repo = f"https://{self.github_user}:{self.github_key}@{repo_url}"
-        self.branch = branch7
+        self.branch = branch
 
         if clone:
             self.clone()

@@ -18,6 +18,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - N/A
 
 
+## [0.2.1] - 2019-07-11
+
+Fixed a really stupid bug
+
+
 ## [0.2.0] - 2019-07-11
 
 Added significant functionality, including methods for creating and checking-out new
